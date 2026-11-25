@@ -257,6 +257,14 @@ const LAYER_ENRICHMENTS: Record<string, Partial<PMTileLayerItem>> = {
   }
 };
 
+export const PMTILES_BASE_URL =
+  import.meta.env.VITE_PMTILES_BASE_URL ||
+  'https://huggingface.co/datasets/suyashbhosale/PMTiles/resolve/main';
+
+export function getPmtilesUrl(fileName: string): string {
+  return `${PMTILES_BASE_URL.replace(/\/+$/, '')}/${encodeURIComponent(fileName)}`;
+}
+
 export const PMTILES_CATALOG: PMTileLayerItem[] = (rawCatalog as any[]).map(item => {
   const enrichment = LAYER_ENRICHMENTS[item.id] || {};
   
@@ -277,7 +285,7 @@ export const PMTILES_CATALOG: PMTileLayerItem[] = (rawCatalog as any[]).map(item
     geometryType: enrichment.geometryType || geom,
     description: enrichment.description || item.description || `Official geospatial dataset for ${item.name}.`,
     downloads: {
-      pmtiles: `/pmtiles/${item.relativePath}`,
+      pmtiles: getPmtilesUrl(item.fileName),
       parquet: `/data/${item.id}.parquet`,
       geojson: `/data/${item.id}.geojson`
     }

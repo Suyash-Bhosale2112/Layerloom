@@ -13,7 +13,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Large Geospatial Datasets (Keep in R2 or local data/ folder, NEVER push to Git)
+# Large Geospatial Datasets (Hosted on Hugging Face Datasets, NEVER push to Git)
 data/raw/*
 data/processed/*
 data/tiles/*

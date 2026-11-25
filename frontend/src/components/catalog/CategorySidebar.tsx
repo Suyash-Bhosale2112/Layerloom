@@ -97,8 +97,8 @@ export const CategorySidebar: React.FC<CategorySidebarProps> = ({
           <span className="text-neutral-300 font-mono text-[11px]">MapLibre + PMTiles</span>
         </div>
         <div className="flex items-center justify-between mt-1">
-          <span>Cloud Ready</span>
-          <span className="text-emerald-400 font-mono text-[11px]">Cloudflare R2 / S3</span>
+          <span>Storage</span>
+          <span className="text-emerald-400 font-mono text-[11px]">Hugging Face Datasets</span>
         </div>
       </div>
     </aside>

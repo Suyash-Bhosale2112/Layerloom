@@ -3,6 +3,7 @@ import maplibregl from 'maplibre-gl';
 import * as pmtiles from 'pmtiles';
 import { ArrowLeft, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 import { PMTileLayerItem } from '../../types';
+import { getPmtilesUrl } from '../../services/catalog';
 import { LayerDetailDrawer } from './LayerDetailDrawer';
 
 interface MapViewProps {
@@ -109,7 +110,7 @@ export const MapView: React.FC<MapViewProps> = ({
 
   const addLayerToMap = (map: maplibregl.Map, targetLayer: PMTileLayerItem) => {
     const sourceId = `pmtiles-source-${targetLayer.id}`;
-    const pmtilesUrl = `${window.location.origin}/pmtiles/${targetLayer.relativePath}`;
+    const pmtilesUrl = targetLayer.downloads?.pmtiles || getPmtilesUrl(targetLayer.fileName);
 
     // Remove existing layerloom layers if any
     const existingLayers = [

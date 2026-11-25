@@ -9,6 +9,7 @@ import {
   HardDrive
 } from 'lucide-react';
 import { PMTileLayerItem } from '../../types';
+import { getPmtilesUrl } from '../../services/catalog';
 
 interface LayerDetailDrawerProps {
   layer: PMTileLayerItem;
@@ -104,8 +105,10 @@ export const LayerDetailDrawer: React.FC<LayerDetailDrawerProps> = ({
           <div className="space-y-2">
             {/* PMTiles Download */}
             <a
-              href={`/pmtiles/${layer.relativePath}`}
+              href={layer.downloads?.pmtiles || getPmtilesUrl(layer.fileName)}
               download={layer.fileName}
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex items-center justify-between p-3 rounded-lg bg-[#181a1f] hover:bg-[#20242b] border border-neutral-800 hover:border-neutral-700 transition-all group"
             >
               <div>
