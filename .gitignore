@@ -1,0 +1,42 @@
+# Python Virtual Environment
+Web_GIS/
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# Node & Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Large Geospatial Datasets (Keep in R2 or local data/ folder, NEVER push to Git)
+data/raw/*
+data/processed/*
+data/tiles/*
+PMTiles/
+*.parquet
+*.pmtiles
+*.tif
+*.tiff
+*.shp
+*.shx
+*.dbf
+*.cpg
+*.prj
+*.gpkg
+*.zip
+*.tar.gz
+
+# Ignore except keep folder structure .gitkeep files
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/tiles/.gitkeep
+
+# Environment variables & secrets
+.env
+.env.local
+.env.*.local
