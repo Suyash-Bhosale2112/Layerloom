@@ -1,12 +1,12 @@
 import React from 'react';
-import { 
-  Download, 
-  X, 
-  Database, 
-  Info,
+import {
+  ArrowUpRight,
   Calendar,
-  Building,
-  HardDrive
+  Database,
+  Download,
+  HardDrive,
+  Info,
+  X
 } from 'lucide-react';
 import { PMTileLayerItem } from '../../types';
 import { getPmtilesUrl } from '../../services/catalog';
@@ -16,154 +16,69 @@ interface LayerDetailDrawerProps {
   onClose: () => void;
 }
 
-export const LayerDetailDrawer: React.FC<LayerDetailDrawerProps> = ({
-  layer,
-  onClose
-}) => {
-  return (
-    <div className="w-[380px] bg-[#121417] border-r border-neutral-800 flex flex-col h-full z-20 shadow-2xl overflow-y-auto">
-      {/* Header */}
-      <div className="p-5 border-b border-neutral-800 flex items-start justify-between">
-        <div>
-          <span className="text-[11px] font-semibold text-orange-400 uppercase tracking-wider">
-            {layer.category}
-          </span>
-          <h2 className="text-xl font-bold text-white mt-1 leading-snug">
-            {layer.name}
-          </h2>
-        </div>
-        <button
-          onClick={onClose}
-          className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors"
-        >
-          <X className="w-5 h-5" />
-        </button>
+export const LayerDetailDrawer: React.FC<LayerDetailDrawerProps> = ({ layer, onClose }) => (
+  <aside className="layer-detail-panel flex h-full w-[min(380px,calc(100vw-24px))] flex-col overflow-y-auto">
+    <div className="flex items-start justify-between border-b border-white/[0.07] p-5">
+      <div>
+        <span className="text-[9px] font-semibold uppercase tracking-[0.17em] text-cyan-300">{layer.category}</span>
+        <h2 className="mt-1.5 text-lg font-semibold leading-snug text-white">{layer.name}</h2>
       </div>
-
-      <div className="p-5 space-y-6 flex-1 text-sm">
-        {/* Meta Pills */}
-        <div className="flex flex-wrap items-center gap-2 text-xs">
-          <span className="px-2.5 py-1 rounded bg-neutral-800 text-neutral-300 flex items-center gap-1.5 border border-neutral-700">
-            <Building className="w-3.5 h-3.5 text-neutral-400" />
-            {layer.attribution}
-          </span>
-          <span className="px-2.5 py-1 rounded bg-neutral-800 text-neutral-300 flex items-center gap-1.5 border border-neutral-700">
-            <Calendar className="w-3.5 h-3.5 text-neutral-400" />
-            {layer.vintage || '2024'}
-          </span>
-          <span className="px-2.5 py-1 rounded bg-neutral-800 text-neutral-300 flex items-center gap-1.5 border border-neutral-700">
-            <HardDrive className="w-3.5 h-3.5 text-neutral-400" />
-            {layer.sizeMB} MB
-          </span>
-        </div>
-
-        {/* License Pill */}
-        <div>
-          <span className="inline-block px-2.5 py-1 rounded text-xs font-mono font-medium text-emerald-400 bg-emerald-950/60 border border-emerald-800">
-            CC0-1.0 / Open Government Data (OGD)
-          </span>
-        </div>
-
-        {/* Abstract */}
-        <div>
-          <h3 className="text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-            <Info className="w-3.5 h-3.5" />
-            About this layer
-          </h3>
-          <p className="text-neutral-300 text-xs leading-relaxed bg-[#181a1f] p-3.5 rounded-lg border border-neutral-800">
-            {layer.description}
-          </p>
-        </div>
-
-        {/* Vector Attributes & Schema */}
-        {layer.fields && layer.fields.length > 0 && (
-          <div>
-            <h3 className="text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-              <Database className="w-3.5 h-3.5" />
-              Vector Attributes ({layer.fields.length})
-            </h3>
-            <div className="flex flex-wrap gap-1.5 bg-[#181a1f] p-3 rounded-lg border border-neutral-800 max-h-36 overflow-y-auto">
-              {layer.fields.map((f) => (
-                <span
-                  key={f}
-                  className="px-2 py-0.5 rounded text-[11px] font-mono bg-neutral-800 text-neutral-300 border border-neutral-700"
-                >
-                  {f}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Download Section - BharatAtlas Style */}
-        <div>
-          <h3 className="text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
-            <Download className="w-3.5 h-3.5" />
-            Download Formats
-          </h3>
-
-          <div className="space-y-2">
-            {/* PMTiles Download */}
-            <a
-              href={layer.downloads?.pmtiles || getPmtilesUrl(layer.fileName)}
-              download={layer.fileName}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-between p-3 rounded-lg bg-[#181a1f] hover:bg-[#20242b] border border-neutral-800 hover:border-neutral-700 transition-all group"
-            >
-              <div>
-                <div className="font-semibold text-white group-hover:text-orange-400 flex items-center gap-2">
-                  <span>PMTiles</span>
-                  <span className="text-[10px] font-mono bg-orange-950 text-orange-400 px-1.5 py-0.5 rounded border border-orange-800">
-                    vector tiles
-                  </span>
-                </div>
-                <div className="text-[11px] text-neutral-400 mt-0.5">
-                  Web maps, MapLibre GL, Leaflet
-                </div>
-              </div>
-              <div className="text-right">
-                <span className="text-xs font-mono text-neutral-400">
-                  {layer.sizeMB} MB
-                </span>
-              </div>
-            </a>
-
-            {/* Parquet Download */}
-            <div className="flex items-center justify-between p-3 rounded-lg bg-[#181a1f] border border-neutral-800/60 opacity-80">
-              <div>
-                <div className="font-semibold text-neutral-200 flex items-center gap-2">
-                  <span>Parquet / GeoParquet</span>
-                  <span className="text-[10px] font-mono bg-emerald-950 text-emerald-400 px-1.5 py-0.5 rounded border border-emerald-800">
-                    recommended
-                  </span>
-                </div>
-                <div className="text-[11px] text-neutral-500 mt-0.5">
-                  Analytics: DuckDB, pandas, geopandas
-                </div>
-              </div>
-              <div className="text-right">
-                <span className="text-xs font-mono text-neutral-500">Fast Query</span>
-              </div>
-            </div>
-
-            {/* GeoJSON & Shapefile Card */}
-            <div className="flex items-center justify-between p-3 rounded-lg bg-[#181a1f] border border-neutral-800/60 opacity-80">
-              <div>
-                <div className="font-semibold text-neutral-200">
-                  GeoJSON / Shapefile / KML
-                </div>
-                <div className="text-[11px] text-neutral-500 mt-0.5">
-                  Desktop GIS: QGIS, ArcGIS, Google Earth
-                </div>
-              </div>
-              <div className="text-right">
-                <span className="text-xs font-mono text-neutral-500">GIS Suite</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <button type="button" onClick={onClose} className="icon-button" aria-label="Close layer details">
+        <X className="h-4 w-4" />
+      </button>
     </div>
-  );
-};
+
+    <div className="space-y-5 p-5 text-xs">
+      <div className="grid grid-cols-2 gap-2">
+        <div className="detail-meta">
+          <Calendar className="h-3.5 w-3.5 text-slate-500" />
+          <span>{layer.vintage || 'Vintage not specified'}</span>
+        </div>
+        <div className="detail-meta">
+          <HardDrive className="h-3.5 w-3.5 text-slate-500" />
+          <span>{layer.sizeMB} MB</span>
+        </div>
+      </div>
+
+      <section>
+        <h3 className="detail-heading"><Info className="h-3.5 w-3.5" /> About this layer</h3>
+        <p className="detail-copy">{layer.description}</p>
+        <p className="mt-2 text-[10px] leading-relaxed text-slate-500">
+          Listed source: <span className="text-slate-400">{layer.attribution}</span>. Verify source terms before reuse; a dataset-specific licence is not supplied here.
+        </p>
+      </section>
+
+      {layer.fields.length > 0 && (
+        <section>
+          <h3 className="detail-heading"><Database className="h-3.5 w-3.5" /> Listed attributes ({layer.fields.length})</h3>
+          <div className="flex max-h-32 flex-wrap gap-1.5 overflow-y-auto rounded-xl border border-white/[0.07] bg-black/10 p-3">
+            {layer.fields.map((field) => (
+              <span key={field} className="field-chip">{field}</span>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <section>
+        <h3 className="detail-heading"><Download className="h-3.5 w-3.5" /> Available data</h3>
+        <a
+          href={layer.downloads?.pmtiles || getPmtilesUrl(layer.fileName)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="pmtiles-link group flex items-center justify-between gap-3 rounded-xl border p-3.5"
+        >
+          <span>
+            <span className="block font-semibold text-slate-100 group-hover:text-cyan-200">Open PMTiles source</span>
+            <span className="mt-1 block text-[10px] leading-relaxed text-slate-500">
+              Hosted vector tiles · {layer.fileName}
+            </span>
+          </span>
+          <ArrowUpRight className="h-4 w-4 shrink-0 text-cyan-300" />
+        </a>
+        <p className="mt-2 text-[10px] leading-relaxed text-slate-500">
+          GeoParquet, GeoJSON, Shapefile and KML exports are not currently published for this layer.
+        </p>
+      </section>
+    </div>
+  </aside>
+);

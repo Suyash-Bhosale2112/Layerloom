@@ -1,31 +1,32 @@
-import { useState, useMemo } from 'react';
+import { lazy, Suspense, useMemo, useState } from 'react';
 import { Header } from './components/common/Header';
 import { CategorySidebar } from './components/catalog/CategorySidebar';
 import { LayerTable } from './components/catalog/LayerTable';
-import { MapView } from './components/map/MapView';
 import { PMTILES_CATALOG, CATEGORIES } from './services/catalog';
 import { PMTileLayerItem, LayerCategory } from './types';
+
+const MapView = lazy(() =>
+  import('./components/map/MapView').then((module) => ({ default: module.MapView }))
+);
 
 export default function App() {
   const [activeView, setActiveView] = useState<'catalog' | 'map'>('catalog');
   const [selectedCategory, setSelectedCategory] = useState<LayerCategory | 'All'>('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeLayer, setActiveLayer] = useState<PMTileLayerItem>(
-    PMTILES_CATALOG.find((l) => l.id.includes('districts')) || PMTILES_CATALOG[0]
+    PMTILES_CATALOG.find((item) => item.id === 'lgd_districts') || PMTILES_CATALOG[0]
   );
 
-  // Filtered layers based on selected category & search input
   const filteredLayers = useMemo(() => {
+    const query = searchQuery.toLowerCase().trim();
     return PMTILES_CATALOG.filter((item) => {
-      const matchesCategory =
-        selectedCategory === 'All' || item.category === selectedCategory;
-      const q = searchQuery.toLowerCase().trim();
+      const matchesCategory = selectedCategory === 'All' || item.category === selectedCategory;
       const matchesSearch =
-        !q ||
-        item.name.toLowerCase().includes(q) ||
-        item.description.toLowerCase().includes(q) ||
-        item.attribution.toLowerCase().includes(q) ||
-        item.category.toLowerCase().includes(q);
+        !query ||
+        item.name.toLowerCase().includes(query) ||
+        item.description.toLowerCase().includes(query) ||
+        item.attribution.toLowerCase().includes(query) ||
+        item.category.toLowerCase().includes(query);
 
       return matchesCategory && matchesSearch;
     });
@@ -37,8 +38,7 @@ export default function App() {
   };
 
   return (
-    <div className="flex flex-col h-screen w-screen bg-[#0c0d0f] text-neutral-100 font-sans overflow-hidden">
-      {/* Universal Top Header */}
+    <div className="app-shell flex h-screen w-screen flex-col overflow-hidden text-slate-100">
       <Header
         activeView={activeView}
         onNavigateHome={() => setActiveView('catalog')}
@@ -46,8 +46,7 @@ export default function App() {
         onSearchChange={setSearchQuery}
       />
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex overflow-hidden">
+      <main className="flex min-h-0 flex-1 flex-col overflow-hidden lg:flex-row">
         {activeView === 'catalog' ? (
           <>
             <CategorySidebar
@@ -60,17 +59,19 @@ export default function App() {
               layers={filteredLayers}
               onSelectLayer={handleSelectLayer}
               activeCategory={selectedCategory}
+              totalCount={PMTILES_CATALOG.length}
             />
           </>
         ) : (
-          <MapView
-            layer={activeLayer}
-            onBack={() => setActiveView('catalog')}
-            allLayers={PMTILES_CATALOG}
-            onSwitchLayer={setActiveLayer}
-          />
+          <Suspense fallback={<div className="flex flex-1 items-center justify-center text-xs text-slate-400">Preparing map...</div>}>
+            <MapView
+              layer={activeLayer}
+              onBack={() => setActiveView('catalog')}
+              allLayers={PMTILES_CATALOG}
+            />
+          </Suspense>
         )}
-      </div>
+      </main>
     </div>
   );
 }

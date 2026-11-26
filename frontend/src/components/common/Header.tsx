@@ -1,11 +1,11 @@
 import React from 'react';
-import { Search, Compass, GitFork } from 'lucide-react';
+import { Compass, GitFork, Search } from 'lucide-react';
 
 interface HeaderProps {
   activeView: 'catalog' | 'map';
   onNavigateHome: () => void;
   searchQuery: string;
-  onSearchChange: (q: string) => void;
+  onSearchChange: (query: string) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -13,62 +13,62 @@ export const Header: React.FC<HeaderProps> = ({
   onNavigateHome,
   searchQuery,
   onSearchChange
-}) => {
-  return (
-    <header className="h-16 bg-[#121417] border-b border-neutral-800 px-6 flex items-center justify-between select-none z-30">
-      {/* Brand Logo */}
-      <div 
+}) => (
+  <header className="app-header z-30 flex h-[68px] shrink-0 items-center justify-between border-b px-5 sm:px-8">
+    <button
+      type="button"
+      onClick={onNavigateHome}
+      className="brand-lockup flex min-w-0 items-center gap-3 text-left"
+      aria-label="Layerloom home"
+    >
+      <span className="brand-mark flex h-10 w-10 shrink-0 items-center justify-center rounded-xl">
+        <Compass className="h-5 w-5" />
+      </span>
+      <span className="min-w-0">
+        <span className="flex items-center gap-2">
+          <span className="text-[17px] font-bold tracking-tight text-white">Layerloom</span>
+          <span className="brand-tag hidden rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.16em] sm:inline-flex">
+            India GIS
+          </span>
+        </span>
+        <span className="block truncate text-[11px] text-slate-400">
+          India&apos;s open geospatial data explorer
+        </span>
+      </span>
+    </button>
+
+    {activeView === 'catalog' && (
+      <label className="catalog-search mx-5 flex w-full max-w-[390px] items-center gap-2.5 rounded-xl border px-3.5 py-2.5">
+        <Search className="h-4 w-4 shrink-0 text-slate-500" aria-hidden="true" />
+        <input
+          type="search"
+          value={searchQuery}
+          onChange={(event) => onSearchChange(event.target.value)}
+          placeholder="Search datasets, places, or themes..."
+          aria-label="Search datasets"
+          className="w-full bg-transparent text-xs text-white outline-none placeholder:text-slate-500"
+        />
+      </label>
+    )}
+
+    <nav className="flex shrink-0 items-center gap-4 text-xs font-medium">
+      <button
+        type="button"
         onClick={onNavigateHome}
-        className="flex items-center gap-3 cursor-pointer group"
+        className={`nav-link ${activeView === 'catalog' ? 'active' : ''}`}
       >
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-orange-600 to-amber-500 flex items-center justify-center text-white shadow-md">
-          <Compass className="w-5 h-5 text-white" />
-        </div>
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="font-extrabold text-lg text-white tracking-tight">
-              Layerloom
-            </span>
-            <span className="text-[10px] font-mono uppercase bg-orange-950 text-orange-400 px-1.5 py-0.5 rounded border border-orange-800">
-              Atlas
-            </span>
-          </div>
-          <p className="text-[11px] text-neutral-400 -mt-0.5">India's Open Geospatial Data Explorer</p>
-        </div>
-      </div>
-
-      {/* Global Search Bar (visible in catalog view) */}
-      {activeView === 'catalog' && (
-        <div className="flex-1 max-w-md mx-8 relative">
-          <Search className="w-4 h-4 text-neutral-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="Search districts, rivers, highways, hospitals, forests..."
-            className="w-full bg-[#181a1f] border border-neutral-700 rounded-lg pl-10 pr-4 py-2 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-orange-500 transition-colors"
-          />
-        </div>
-      )}
-
-      {/* Navigation Links */}
-      <div className="flex items-center gap-5 text-xs font-medium text-neutral-300">
-        <button 
-          onClick={onNavigateHome}
-          className={`${activeView === 'catalog' ? 'text-orange-400 font-bold' : 'hover:text-white'} transition-colors`}
-        >
-          Layers
-        </button>
-        <a 
-          href="https://github.com/Suyash-Bhosale2112/Layerloom"
-          target="_blank"
-          rel="noreferrer"
-          className="flex items-center gap-1.5 text-neutral-400 hover:text-white transition-colors"
-        >
-          <GitFork className="w-4 h-4" />
-          <span>GitHub</span>
-        </a>
-      </div>
-    </header>
-  );
-};
+        Explore
+      </button>
+      <a
+        href="https://github.com/Suyash-Bhosale2112/Layerloom"
+        target="_blank"
+        rel="noreferrer"
+        aria-label="Layerloom on GitHub"
+        className="nav-github flex items-center gap-1.5"
+      >
+        <GitFork className="h-4 w-4" />
+        <span className="hidden sm:inline">GitHub</span>
+      </a>
+    </nav>
+  </header>
+);

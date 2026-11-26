@@ -279,15 +279,21 @@ export const PMTILES_CATALOG: PMTileLayerItem[] = (rawCatalog as any[]).map(item
 
   return {
     ...item,
-    vintage: enrichment.vintage || '2024',
-    attribution: enrichment.attribution || item.attribution || 'Open Geospatial Data',
-    featureCount: enrichment.featureCount || `${item.sizeMB} MB`,
+    vintage: enrichment.vintage,
+    attribution:
+      enrichment.attribution ||
+      (item.attribution === 'Government of India / Open Data'
+        ? 'Source attribution not verified'
+        : item.attribution || 'Source attribution not specified'),
+    featureCount: enrichment.featureCount,
     geometryType: enrichment.geometryType || geom,
-    description: enrichment.description || item.description || `Official geospatial dataset for ${item.name}.`,
+    description:
+      enrichment.description ||
+      (!item.description || item.description.startsWith('/tmp/') || item.description === item.sourceLayer
+        ? `A map-ready layer for ${item.name}. A detailed dataset description is not available.`
+        : item.description),
     downloads: {
-      pmtiles: getPmtilesUrl(item.fileName),
-      parquet: `/data/${item.id}.parquet`,
-      geojson: `/data/${item.id}.geojson`
+      pmtiles: getPmtilesUrl(item.fileName)
     }
   };
 });
